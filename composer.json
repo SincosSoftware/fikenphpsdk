@@ -1,0 +1,14 @@
+{
+  "name": "sincos/fiken-php-sdk",
+  "type": "project",
+  "description": "Fiken PHP SDK",
+  "license": "proprietary",
+  "version": "dev-master",
+  "homepage": "https://24nettbutikk.no",
+  "authors": [
+    {
+      "name": "Sincos Software AS",
+      "homepage": "https://24nettbutikk.no"
+    }
+  ]
+}
