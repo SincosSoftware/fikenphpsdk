@@ -3,7 +3,6 @@
   "type": "project",
   "description": "Fiken PHP SDK",
   "license": "proprietary",
-  "version": "dev-master",
   "homepage": "https://24nettbutikk.no",
   "authors": [
     {
