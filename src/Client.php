@@ -2,11 +2,9 @@
 
 namespace FikenPhpSdk;
 
-
 use GuzzleHttp\Client as HttpClient;
 
-
-class Fiken
+class Client
 {
     protected $baseurl = 'https://fiken.no/api/v1';
     protected $client;
@@ -14,6 +12,11 @@ class Fiken
     public function __construct()
     {
         $this->client = new HttpClient();
+    }
+
+    public function __get($name, $arguments)
+    {
+        dd(class_exists('FikenPhpSdk\\Clients\\Customer'));
     }
 
     protected function sendRequest($method, $uri, $options)

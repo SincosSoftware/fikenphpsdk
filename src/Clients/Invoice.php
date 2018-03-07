@@ -1,7 +1,6 @@
 <?php
 
-namespace FikenPhpSdk;
-
+namespace FikenPhpSdk\Clients;
 
 class Invoice
 {

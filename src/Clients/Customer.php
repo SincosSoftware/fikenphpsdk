@@ -1,6 +1,6 @@
 <?php
 
-namespace FikenPhpSdk;
+namespace FikenPhpSdk\Clients;
 
 class Customer
 {
@@ -10,15 +10,6 @@ class Customer
         $method = 'post';
 
         return $this->sendRequest($method, $uri, $options);
-    }
-
-    public function getCustomerId()
-    {
-        $uri = '/companies';
-        $method = 'post';
-        $response = $this->sendRequest($method, $uri);
-
-        return $response;
     }
 
     public function getCustomers($options)
