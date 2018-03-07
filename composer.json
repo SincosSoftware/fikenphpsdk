@@ -9,5 +9,10 @@
       "name": "Sincos Software AS",
       "homepage": "https://24nettbutikk.no"
     }
-  ]
+  ],
+  "autoload": {
+    "psr-4": {
+      "FikenPhpSdk\\": "src/"
+    }
+  }
 }
