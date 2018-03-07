@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: asbjorn
- * Date: 06/03/2018
- * Time: 12:36
- */
 
 namespace FikenPhpSdk;
-
 
 class Customer
 {
@@ -23,7 +16,6 @@ class Customer
     {
         $uri = '/companies';
         $method = 'post';
-
         $response = $this->sendRequest($method, $uri);
 
         return $response;
