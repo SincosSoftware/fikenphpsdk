@@ -12,7 +12,10 @@
   ],
   "autoload": {
     "psr-4": {
-      "FikenPhpSdk\\": "src/"
+      "FikenSDK\\": "src/"
     }
+  },
+  "require": {
+    "guzzlehttp/guzzle": "~6.3"
   }
 }
