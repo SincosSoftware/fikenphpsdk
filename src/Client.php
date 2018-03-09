@@ -1,27 +1,24 @@
 <?php
 
-namespace FikenPhpSdk;
+namespace FikenSDK;
 
-use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\ClientInterface as HttpClientInterface;
 
 class Client
 {
-    protected $baseurl = 'https://fiken.no/api/v1';
-    protected $client;
+    protected $httpClient;
 
-    public function __construct()
+    public function __construct(HttpClientInterface $httpClient)
     {
-        $this->client = new HttpClient();
+        $this->httpClient = $httpClient;
     }
 
-    public function __get($name, $arguments)
+    public function __get($argument)
     {
-        dd(class_exists('FikenPhpSdk\\Clients\\Customer'));
-    }
+        $class = 'FikenSDK\\Clients\\' . ucfirst($argument);
 
-    protected function sendRequest($method, $uri, $options)
-    {
-        return $this->client->request($method, $this->baseurl . $uri, $options);
+        if (class_exists($class)) {
+            return new $class($this->httpClient);
+        }
     }
-
 }

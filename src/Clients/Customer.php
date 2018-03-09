@@ -1,10 +1,20 @@
 <?php
 
-namespace FikenPhpSdk\Clients;
+namespace FikenSDK\Clients;
 
-class Customer
+class Customer extends DataObject
 {
-    public function createCustomer($options)
+    protected $properties = [
+        'name' => 'string',
+        'email' => 'string',
+        'address' => 'string',
+        'country' => 'string',
+        'postalPlace' => 'string',
+        'postalCode' => 'int',
+        'customer' => 'bool',
+    ];
+
+    public function createCustomer($options = null)
     {
         $uri = '/companies/' . $this->getCustomerId() . '/contacts';
         $method = 'post';
