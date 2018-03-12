@@ -2,16 +2,7 @@
 
 namespace FikenSDK\Clients;
 
-class Invoice extends DataObject
+class Invoice
 {
-    protected $propertyTypes = [
-        'issueDate' => 'string',
-        'dueDate' => 'string',
-        'lines' => 'string',
-        'unitNetAmount' => 'int',
-        'description' => 'string',
-        'productUrl' => 'string',
-        'url' => 'string',
-        'bankAccountUrl' => 'string',
-    ];
+
 }
