@@ -2,7 +2,7 @@
 
 namespace FikenSDK\Resources;
 
-class Customer extends DataObject
+class Contact extends DataObject
 {
     protected $propertyTypes = [
         'name' => 'string',
