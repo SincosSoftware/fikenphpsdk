@@ -35,6 +35,16 @@ abstract class DataObject
         return $this->properties;
     }
 
+    public function __get($name)
+    {
+        return $this->getProperty($name);
+    }
+
+    public function required()
+    {
+        return [];
+    }
+
     /**
      * @param array $data
      * @throws InvalidPropertyException
@@ -82,6 +92,25 @@ abstract class DataObject
         $this->properties[$name] = $value;
 	}
 
+    /**
+     * @param $name
+     * @return mixed
+     * @throws InvalidPropertyException
+     */
+    protected function getProperty($name)
+    {
+        $getMethod = 'get' . ucfirst($name);
+        if (method_exists($this, $getMethod)) {
+            return $this->{$getMethod}();
+        }
+
+        if ($this->isInvalidProperty($name)) {
+            throw new InvalidPropertyException(static::class, $name);
+        }
+
+        return $this->properties[$name];
+    }
+
     protected function isInvalidProperty($name)
     {
         return ! isset($this->types()[$name]);
@@ -106,9 +135,4 @@ abstract class DataObject
     }
 
     abstract public function types();
-
-    public function required()
-    {
-        return [];
-    }
 }

@@ -133,4 +133,25 @@ class DataObjectTest extends TestCase
             'brand' => 'Saab',
         ]);
     }
+
+    public function testGettingValidProperty()
+    {
+        $class = new Car([
+            'brand' => 'Saab',
+            'model' => 2017
+        ]);
+
+        $this->assertEquals('Saab', $class->brand);
+    }
+
+    public function testGettingInvalidProperty()
+    {
+
+        $class = new Car([
+            'brand' => 'Saab',
+            'model' => 2017
+        ]);
+
+        $this->assertFalse('Mercedes' == $class->brand);
+    }
 }
