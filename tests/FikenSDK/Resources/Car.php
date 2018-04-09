@@ -7,11 +7,26 @@ use FikenSDK\Resources\DataObject;
 
 class Car extends DataObject
 {
-    protected $propertyTypes =  [
-        'brand' => 'string',
-        'is_diesel' => 'bool',
-        'model' => 'int'
-    ];
+    public function types()
+    {
+        return [
+            'brand' => 'string',
+            'is_diesel' => 'bool',
+            'model' => 'int',
+            'previous_owners' => 'array',
+            'drive_wheel' => function ($value) {
+                return in_array($value, ['front', 'back']);
+            }
+        ];
+    }
+
+    public function required()
+    {
+        return [
+            'brand',
+            'model',
+        ];
+    }
 
     protected function setNumberOfDoors($number)
     {

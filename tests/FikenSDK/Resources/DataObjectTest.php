@@ -4,6 +4,7 @@ namespace Tests\FikenSDK\Resources;
 
 use FikenSDK\Exceptions\InvalidPropertyException;
 use FikenSDK\Exceptions\InvalidTypeException;
+use FikenSDK\Exceptions\MissingRequiredPropertyException;
 use PHPUnit\Framework\TestCase;
 
 class DataObjectTest extends TestCase
@@ -14,9 +15,9 @@ class DataObjectTest extends TestCase
     public function testCreation()
     {
         $carData = [
-            'brand' => 'Mercedes',
+            'brand' => 'Saab',
             'is_diesel' => true,
-            'model' => 2016
+            'model' => 2016,
         ];
 
         $car = new Car($carData);
@@ -28,7 +29,8 @@ class DataObjectTest extends TestCase
     public function testCreatePartial()
     {
         $carData = [
-            'brand' => 'Mercedes'
+            'brand' => 'Saab',
+            'model' => 2016,
         ];
 
         $car = new Car($carData);
@@ -40,10 +42,39 @@ class DataObjectTest extends TestCase
     {
         $carData = [
             'numberOfDoors' => 4,
+            'model' => 2016,
+            'brand' => 'Saab',
         ];
 
         $car = new Car($carData);
         $this->assertEquals($carData, $car->toArray());
+    }
+
+    public function testTypeValidationWithClosure()
+    {
+        $carData = [
+            'model' => 2016,
+            'brand' => 'Saab',
+            'drive_wheel' => 'front',
+        ];
+        $car = new Car($carData);
+
+        $this->assertEquals($carData, $car->toArray());
+    }
+
+    /**
+     * @throws InvalidPropertyException
+     */
+    public function testTypeValidationFailsWithClosure()
+    {
+        $this->expectExceptionMessage('Property drive_wheel does not conform to requirements.');
+
+        $car = new Car([
+            'model' => 2016,
+            'brand' => 'Saab',
+            'drive_wheel' => '4WD',
+        ]);
+
     }
 
     /**
@@ -83,10 +114,23 @@ class DataObjectTest extends TestCase
         $this->expectExceptionMessage('The class Tests\FikenSDK\Resources\Car does not support the property is_petrol.');
 
         new Car([
-            'brand' => 'Mercedes',
+            'brand' => 'Saab',
             'is_diesel' => true,
             'model' => 2016,
-            'is_petrol' => false
+            'is_petrol' => false,
+        ]);
+    }
+
+    /**
+     * @throws MissingRequiredPropertyException
+     */
+    public function testMissingRequiredProperty()
+    {
+        $this->expectException(MissingRequiredPropertyException::class);
+        $this->expectExceptionMessage('The class Tests\FikenSDK\Resources\Car is missing the following required properties: model.');
+
+        new Car([
+            'brand' => 'Saab',
         ]);
     }
 }
