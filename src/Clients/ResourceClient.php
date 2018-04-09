@@ -45,14 +45,14 @@ abstract class ResourceClient
     protected function getCompanyLinks()
     {
         $company = $this->getCompany();
-
+        
         return $company->_links;
     }
 
     protected function getCompany()
     {
         $companies = $this->getCompanies();
-
+        
         foreach ($companies as $company) {
             if ($company->slug === $this->companySlug) {
                 return $company;
