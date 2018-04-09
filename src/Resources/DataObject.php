@@ -2,18 +2,22 @@
 
 namespace FikenSDK\Resources;
 
+use Closure;
 use FikenSDK\Exceptions\InvalidPropertyException;
 use FikenSDK\Exceptions\InvalidTypeException;
+use FikenSDK\Exceptions\MissingRequiredPropertyException;
 
 abstract class DataObject
 {
     protected $properties = [];
-    protected $propertyTypes = [];
+    protected $types = [];
+    protected $required = [];
 
     protected $validationMethod = [
         'string' => 'is_string',
         'bool' => 'is_bool',
         'int' => 'is_int',
+        'array' => 'is_array',
     ];
 
     /**
@@ -23,6 +27,7 @@ abstract class DataObject
     public function __construct(array $data)
     {
         $this->fill($data);
+        $this->checkRequiredProperties();
     }
 
     public function toArray()
@@ -42,6 +47,18 @@ abstract class DataObject
     }
 
     /**
+     * @throws MissingRequiredPropertyException
+     */
+    protected function checkRequiredProperties()
+    {
+        $missingProperties = array_diff($this->required(), array_keys($this->properties));
+
+        if (!empty($missingProperties)) {
+            throw new MissingRequiredPropertyException(static::class, $missingProperties);
+        }
+    }
+
+    /**
      * @param string $name
      * @param mixed $value
      * @return mixed
@@ -54,31 +71,44 @@ abstract class DataObject
             return $this->{$setMethod}($value);
         }
 
-        if (!$this->isValidProperty($name)) {
+        if ($this->isInvalidProperty($name)) {
             throw new InvalidPropertyException(static::class, $name);
         }
 
-        if (!$this->isValidPropertyType($name, $value)) {
-		    throw new InvalidTypeException($name, $this->propertyTypes[$name]);
+        if ($this->isInvalidPropertyType($name, $value)) {
+		    throw new InvalidTypeException($name, $this->types()[$name]);
         }
 
         $this->properties[$name] = $value;
 	}
 
-    protected function isValidProperty($name)
+    protected function isInvalidProperty($name)
     {
-        return isset($this->propertyTypes[$name]);
+        return ! isset($this->types()[$name]);
     }
 
-    protected function isValidPropertyType($name, $value)
+    protected function isInvalidPropertyType($name, $value)
     {
         $method = $this->getValidationMethodForProperty($name);
 
-        return $method($value);
+        return ! $method($value);
     }
 
     protected function getValidationMethodForProperty($name)
     {
-        return $this->validationMethod[$this->propertyTypes[$name]];
+        $propertyType = $this->types()[$name];
+
+        if ($propertyType instanceof Closure) {
+            return $propertyType;
+        }
+
+        return $this->validationMethod[$propertyType];
+    }
+
+    abstract public function types();
+
+    public function required()
+    {
+        return [];
     }
 }
