@@ -4,13 +4,27 @@ namespace FikenSDK\Resources;
 
 class Contact extends DataObject
 {
-    protected $propertyTypes = [
-        'name' => 'string',
-        'email' => 'string',
-        'address' => 'string',
-        'country' => 'string',
-        'postalPlace' => 'string',
-        'postalCode' => 'int',
-        'customer' => 'bool',
-    ];
+    public function types()
+    {
+        return [
+            'name' => 'string',
+            'email' => 'string',
+            'organizationIdentifier' => 'string',
+            'address' => function ($address) {
+                return $address instanceof Address;
+            },
+            'phoneNumber' => 'string',
+            'customerNumber' => 'int',
+            'customer' => 'bool',
+            'supplierNumber' => 'int',
+            'supplier' => 'bool',
+            'memberNumber' => 'int',
+            'language' => 'string',
+        ];
+    }
+
+    public function required()
+    {
+        return ['name'];
+    }
 }
