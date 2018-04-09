@@ -17,6 +17,7 @@ class Client
     {
         $this->httpClient = new HttpClient([
             'auth' => [$username, $password],
+            'headers' => ['Content-Type' => 'application/json'],
         ]);
 
         $this->company = $company;
