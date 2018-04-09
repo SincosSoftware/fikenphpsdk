@@ -34,9 +34,23 @@ abstract class ResourceClient
         return $response->elements($this->getRelUrl());
     }
 
-    protected function getResourceUrl()
+    public function search($query)
     {
-        $resourceRel = $this->getRelUrl();
+        $url = $this->getResourceUrl('search');
+        $dataOptions = [
+            'body' => json_encode([
+                'query' => $query,
+            ]),
+        ];
+
+        $response = $this->httpClient->post($url, $dataOptions);
+
+        return $this->parseResponse($response);
+    }
+
+    protected function getResourceUrl($resource = null)
+    {
+        $resourceRel = $this->getRelUrl($resource);
         $links = $this->getCompanyLinks();
 
         return $links->$resourceRel->href;
@@ -52,7 +66,6 @@ abstract class ResourceClient
     protected function getCompany()
     {
         $companies = $this->getCompanies();
-        
         foreach ($companies as $company) {
             if ($company->slug === $this->companySlug) {
                 return $company;
