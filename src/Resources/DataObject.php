@@ -32,7 +32,9 @@ abstract class DataObject
 
     public function toArray()
     {
-        return $this->properties;
+        return array_map(function($property) {
+            return $property instanceof DataObject ? $property->toArray() : $property;
+        }, $this->properties);
     }
 
     public function __get($name)
