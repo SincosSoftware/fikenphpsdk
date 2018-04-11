@@ -12,8 +12,9 @@ class Client
     protected $httpClient;
     protected $company;
     protected $resourceClients;
+    protected $bankAccount;
 
-    public function __construct($username, $password, $company)
+    public function __construct($username, $password, $company, $bankAccount)
     {
         $this->httpClient = new HttpClient([
             'auth' => [$username, $password],
@@ -21,6 +22,7 @@ class Client
         ]);
 
         $this->company = $company;
+        $this->bankAccount = $bankAccount;
     }
 
     public function __get($argument)
@@ -42,7 +44,7 @@ class Client
         $class = 'FikenSDK\\Clients\\' . ucfirst($resourceName);
 
         if ($this->isValidClient($class)) {
-            return new $class($this->httpClient, $this->company);
+            return new $class($this->httpClient, $this->company, $this->bankAccount);
         }
     }
 
