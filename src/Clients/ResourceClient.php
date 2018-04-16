@@ -20,7 +20,7 @@ abstract class ResourceClient
      */
     protected $companySlug;
 
-    public function __construct(Client $httpClient, $companySlug = null)
+    public function __construct(Client $httpClient, $companySlug = null, $bankAccount = null)
     {
         $this->httpClient = $httpClient;
         $this->companySlug = $companySlug;
@@ -48,6 +48,21 @@ abstract class ResourceClient
         return $this->parseResponse($response);
     }
 
+    protected function post(Array $body)
+    {
+        $response = $this->httpClient->post(
+            $this->getResourceUrl(),
+            ['body' => json_encode($body)]
+        );
+
+        return $this->parseResponse($response);
+    }
+
+    protected function get()
+    {
+        return $this->httpClient->get($this->getResourceUrl());
+    }
+
     protected function getResourceUrl($resource = null)
     {
         $resourceRel = $this->getRelUrl($resource);
@@ -59,7 +74,7 @@ abstract class ResourceClient
     protected function getCompanyLinks()
     {
         $company = $this->getCompany();
-        
+
         return $company->_links;
     }
 

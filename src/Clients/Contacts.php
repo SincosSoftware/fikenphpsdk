@@ -6,25 +6,28 @@ use FikenSDK\Resources\Contact;
 
 class Contacts extends ResourceClient
 {
-    protected $suppliedContact;
-
     public function firstOrCreate(Contact $contactData)
     {
-        $search = new Search($this->httpClient);
-        $query = $search->search('asbjorn@24nettbutikk.no');
-        dd($query);
-        
         $contact = $this->findContact($contactData);
-
-        return $contact ?: $this->createContact($contact);
+        
+        return $contact ?: $this->createContact($contactData);
     }
 
     protected function findContact(Contact $contactData)
     {
-        $contacts = $this->getAllContacts()->embedded;
-        $rel = $this->getRelUrl();
+        $query = $this->search($contactData->email);
+        if (null === $query->embedded) {
+            return null;
+        }
 
-        foreach ($contacts->$rel as $contact) {
+        return $this->parseQuery($query, $contactData);
+    }
+
+    protected function parseQuery($query, Contact $contactData)
+    {
+        $sortedContacts = $this->sortedContacts($query);
+
+        foreach ($sortedContacts as $contact){
             if ($this->contactMatches($contact, $contactData)) {
                 return $contact;
             }
@@ -33,23 +36,59 @@ class Contacts extends ResourceClient
         return null;
     }
 
-    protected function getAllContacts()
+    protected function contactMatches($contact, Contact $contactData)
     {
-        $response = $this->httpClient->get($this->getResourceUrl());
+        if (isset($contact->memberNumber) && (int) $contact->memberNumber === (int) $contactData->memberNumber) {
+            return $contact;
+        }
 
-        return $this->parseResponse($response);
+        if ($contact->name == $contactData->name) {
+            return $contact;
+        }
+
+        return false;
     }
 
     protected function createContact(Contact $contact)
     {
-        $createContact = $this->httpClient->post($this->getResourceUrl(), ['body' => $contact]);
+        $createContact = $this->post($contact->toArray());
 
         return $createContact;
     }
 
-    protected function contactMatches($contact, Contact $contactData)
+    protected function sortedContacts($query)
     {
-        dd($contact, $contactData);
-        return $contact->name == $contactData->name && $contact->email == $contactData->email;
+        $rel = $this->getRelUrl();
+        $contacts = $query->embedded->$rel;
+
+        usort($contacts, function($a, $b) {
+            if (isset($a->memberNumber) && ! isset($b->memberNumber)) {
+                return -1;
+            }
+
+            if (! isset($a->memberNumber) && isset($b->memberNumber)) {
+                return 1;
+            }
+
+            if (isset($a->memberNumber) && isset($b->memberNumber)) {
+                return $a->memberNumber > $b->memberNumber ? -1 : ($a->memberNumber < $b->memberNumber ? 1 : 0);
+            }
+
+            if (isset($a->customerNumber) && ! isset($b->customerNumber)) {
+                return -1;
+            }
+
+            if (! isset($a->customerNumber) && isset($b->customerNumber)) {
+                return 1;
+            }
+
+            if (isset($a->customerNumber) && isset($b->customerNumber)) {
+                return $a->customerNumber > $b->customerNumber ? -1 : ($a->customerNumber < $b->customerNumber ? 1 : 0);
+            }
+
+            return 0;
+        });
+
+        return $contacts;
     }
 }
