@@ -10,15 +10,13 @@ class Contact extends DataObject
             'name' => 'string',
             'email' => 'string',
             'organizationIdentifier' => 'string',
-            'address' => function ($address) {
-                return $address instanceof Address;
-            },
+            'address' => Address::class,
             'phoneNumber' => 'string',
             'customerNumber' => 'int',
             'customer' => 'bool',
             'supplierNumber' => 'int',
             'supplier' => 'bool',
-            'memberNumber' => 'int',
+            'memberNumber' => 'numeric',
             'language' => 'string',
         ];
     }
