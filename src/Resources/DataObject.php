@@ -6,10 +6,12 @@ use Closure;
 use FikenSDK\Exceptions\InvalidPropertyException;
 use FikenSDK\Exceptions\InvalidTypeException;
 use FikenSDK\Exceptions\MissingRequiredPropertyException;
+use stdClass;
 
 abstract class DataObject
 {
     protected $properties = [];
+    protected $hiddenProperties = [];
     protected $types = [];
     protected $required = [];
 
@@ -18,6 +20,7 @@ abstract class DataObject
         'bool' => 'is_bool',
         'int' => 'is_int',
         'array' => 'is_array',
+        'numeric' => 'is_numeric',
     ];
 
     /**
@@ -32,9 +35,16 @@ abstract class DataObject
 
     public function toArray()
     {
-        return array_map(function($property) {
+        return array_map(function ($property) {
             return $property instanceof DataObject ? $property->toArray() : $property;
         }, $this->properties);
+    }
+
+    public static function fromStdClass(stdClass $object)
+    {
+        $properties = get_object_vars($object);
+
+        return new static($properties);
     }
 
     public function __get($name)
@@ -78,6 +88,10 @@ abstract class DataObject
      */
     protected function setProperty($name, $value)
     {
+        if (substr($name, 0, 1) === '_') {
+            return $this->setHiddenProperty($name, $value);
+        }
+
         $setMethod = 'set' . ucfirst($name);
         if (method_exists($this, $setMethod)) {
             return $this->{$setMethod}($value);
@@ -87,12 +101,37 @@ abstract class DataObject
             throw new InvalidPropertyException(static::class, $name);
         }
 
+        $value = $this->formatValue($name, $value);
+
         if ($this->isInvalidPropertyType($name, $value)) {
-		    throw new InvalidTypeException($name, $this->types()[$name]);
+            throw new InvalidTypeException($name, $this->getPropertyType($name));
         }
 
         $this->properties[$name] = $value;
-	}
+    }
+
+    protected function setHiddenProperty($name, $value)
+    {
+        $this->hiddenProperties[$name] = $value;
+    }
+
+    protected function formatValue($name, $value)
+    {
+        $propertyType = $this->getPropertyType($name);
+
+        if ($this->canConvertToDataObject($propertyType, $value)) {
+            $value = $propertyType::fromStdClass($value);
+        }
+
+        return $value;
+    }
+
+    protected function canConvertToDataObject($propertyType, $value)
+    {
+        return class_exists($propertyType)
+            && is_subclass_of($propertyType, DataObject::class)
+            && $value instanceof stdClass;
+    }
 
     /**
      * @param $name
@@ -113,9 +152,21 @@ abstract class DataObject
         return $this->properties[$name];
     }
 
+    protected function getPropertyType($name)
+    {
+        return isset($this->types()[$name]) ? $this->types()[$name] : null;
+    }
+
+    protected function getHref()
+    {
+        return isset($this->hiddenProperties['_links']->self->href)
+            ? $this->hiddenProperties['_links']->self->href
+            : null;
+    }
+
     protected function isInvalidProperty($name)
     {
-        return ! isset($this->types()[$name]);
+        return null === $this->getPropertyType($name);
     }
 
     protected function isInvalidPropertyType($name, $value)
@@ -127,10 +178,16 @@ abstract class DataObject
 
     protected function getValidationMethodForProperty($name)
     {
-        $propertyType = $this->types()[$name];
+        $propertyType = $this->getPropertyType($name);
 
         if ($propertyType instanceof Closure) {
             return $propertyType;
+        }
+
+        if (class_exists($propertyType)) {
+            return function ($value) use ($propertyType) {
+                return $value instanceof $propertyType;
+            };
         }
 
         return $this->validationMethod[$propertyType];

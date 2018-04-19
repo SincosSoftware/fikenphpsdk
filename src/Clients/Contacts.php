@@ -9,23 +9,32 @@ class Contacts extends ResourceClient
     public function firstOrCreate(Contact $contactData)
     {
         $contact = $this->findContact($contactData);
+
+        if (null === $contact) {
+            $response = $this->createContact($contactData);
+            $href = $response->_links->self->href;
+        }
         
-        return $contact ?: $this->createContact($contactData);
+        return $contact ? Contact::fromStdClass($contact) : $this->createContact($contactData);
     }
 
     protected function findContact(Contact $contactData)
     {
-        $query = $this->search($contactData->email);
-        if (null === $query->embedded) {
+        $response = $this->search($contactData->email);
+
+        if (null === $response->embedded) {
             return null;
         }
 
-        return $this->parseQuery($query, $contactData);
+        $rel = $this->getRelUrl();
+        $contacts = $response->embedded->$rel;
+
+        return $this->getFirstMatch($contacts, $contactData);
     }
 
-    protected function parseQuery($query, Contact $contactData)
+    protected function getFirstMatch($contacts, Contact $contactData)
     {
-        $sortedContacts = $this->sortedContacts($query);
+        $sortedContacts = $this->sortContacts($contacts);
 
         foreach ($sortedContacts as $contact){
             if ($this->contactMatches($contact, $contactData)) {
@@ -51,16 +60,13 @@ class Contacts extends ResourceClient
 
     protected function createContact(Contact $contact)
     {
-        $createContact = $this->post($contact->toArray());
+        $response = $this->post($contact->toArray());
 
         return $createContact;
     }
 
-    protected function sortedContacts($query)
+    protected function sortContacts($contacts)
     {
-        $rel = $this->getRelUrl();
-        $contacts = $query->embedded->$rel;
-
         usort($contacts, function($a, $b) {
             if (isset($a->memberNumber) && ! isset($b->memberNumber)) {
                 return -1;

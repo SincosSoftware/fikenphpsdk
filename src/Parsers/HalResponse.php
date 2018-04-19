@@ -17,16 +17,9 @@ class HalResponse
 
     protected function parse(ResponseInterface $response)
     {
-        $data = json_decode((string) $response->getBody());
+        $responseBody = json_decode((string) $response->getBody());
 
-        $this->links = isset($data->_links) ? $data->_links : null;
-        $this->embedded = isset($data->_embedded) ? $data->_embedded : null;
-
-        foreach (get_object_vars($data) as $var => $value) {
-            if (substr($var, 0, 1) !== '_') {
-                $this->properties[$var] = $value;
-            }
-        }
+        empty($responseBody) ? $this->parseEmptyResponse($response) : $this->parseResponseBody($responseBody);
     }
 
     public function elements($name)
@@ -47,5 +40,36 @@ class HalResponse
             ' on line ' . $trace[0]['line'],
             E_USER_NOTICE);
         return null;
+    }
+
+    protected function parseResponseBody($responseBody)
+    {
+        $this->links = isset($responseBody->_links) ? $responseBody->_links : null;
+        $this->embedded = isset($responseBody->_embedded) ? $responseBody->_embedded : null;
+
+        foreach (get_object_vars($responseBody) as $var => $value) {
+            if (substr($var, 0, 1) !== '_') {
+                $this->properties[$var] = $value;
+            }
+        }
+    }
+
+    protected function parseEmptyResponse(ResponseInterface $response)
+    {
+        $responseLocationHeader = $response->getHeader('Location');
+
+        if (isset($responseLocationHeader)) {
+            $this->links = json_decode(json_encode([
+                '_links' => [
+                    'self' => [
+                        'href' => $responseLocationHeader
+                    ]
+                ]
+            ]));
+
+            return $this;
+        }
+
+        return $response->getHeaders();
     }
 }
