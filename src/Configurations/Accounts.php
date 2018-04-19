@@ -8,4 +8,6 @@ class Accounts
     const SALES_MEDIUM_VAT = '3030';
     const SALES_EX_VAT = '3100';
     const SHIPPING = '6940';
+    const SALES_COSTS = '7300';
+    const GIFTCARDS = '2900';
 }
