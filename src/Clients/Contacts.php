@@ -6,16 +6,22 @@ use FikenSDK\Resources\Contact;
 
 class Contacts extends ResourceClient
 {
-    public function firstOrCreate(Contact $contactData)
+    public function create(Contact $contact)
+    {
+        $response = $this->post($contact->toArray());
+
+        return $response;
+    }
+
+    public function find(Contact $contactData)
     {
         $contact = $this->findContact($contactData);
 
         if (null === $contact) {
-            $response = $this->createContact($contactData);
-            $href = $response->_links->self->href;
+            return null;
         }
-        
-        return $contact ? Contact::fromStdClass($contact) : $this->createContact($contactData);
+
+        return Contact::fromStdClass($contact);
     }
 
     protected function findContact(Contact $contactData)
@@ -56,13 +62,6 @@ class Contacts extends ResourceClient
         }
 
         return false;
-    }
-
-    protected function createContact(Contact $contact)
-    {
-        $response = $this->post($contact->toArray());
-
-        return $createContact;
     }
 
     protected function sortContacts($contacts)

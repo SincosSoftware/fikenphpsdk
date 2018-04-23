@@ -27,7 +27,6 @@ class Sale extends DataObject
             'date',
             'kind',
             'identifier',
-            'paid',
             'lines',
             'customer',
         ];
