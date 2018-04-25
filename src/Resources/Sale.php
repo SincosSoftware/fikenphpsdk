@@ -28,7 +28,6 @@ class Sale extends DataObject
             'kind',
             'identifier',
             'lines',
-            'customer',
         ];
     }
 }
