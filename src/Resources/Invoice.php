@@ -9,12 +9,26 @@ class Invoice extends DataObject
         return [
             'issueDate' => 'string',
             'dueDate' => 'string',
-            'lines' => 'string',
-            'unitNetAmount' => 'int',
-            'description' => 'string',
-            'productUrl' => 'string',
-            'url' => 'string',
+            'lines' => 'array',
+            'ourReference' => 'string',
+            'yourReference' => 'string',
+            'customer' => 'array',
             'bankAccountUrl' => 'string',
+            'currency' => 'string',
+            'invoiceText' => 'string',
+            'cash' => 'bool',
+            'paymentAccount' => 'string',
+        ];
+    }
+
+    public function required()
+    {
+        return [
+            'issueDate',
+            'dueDate',
+            'lines',
+            'customer',
+            'bankAccountUrl',
         ];
     }
 }

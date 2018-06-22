@@ -52,7 +52,9 @@ abstract class ResourceClient
     {
         $response = $this->httpClient->post(
             $this->getResourceUrl(),
-            ['body' => json_encode($body)]
+            [
+                'body' => json_encode($body)
+            ]
         );
 
         return $this->parseResponse($response);
