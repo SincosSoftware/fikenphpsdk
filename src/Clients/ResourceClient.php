@@ -4,7 +4,7 @@ namespace FikenSDK\Clients;
 
 use FikenSDK\Parsers\HalResponse;
 use GuzzleHttp\Client;
-use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Message\Response;
 use ReflectionClass;
 
 abstract class ResourceClient
@@ -110,7 +110,7 @@ abstract class ResourceClient
         return $parsedResponse->links->$companiesRel->href;
     }
 
-    protected function parseResponse(ResponseInterface $response)
+    protected function parseResponse(Response $response)
     {
         $parser = new HalResponse($response);
 

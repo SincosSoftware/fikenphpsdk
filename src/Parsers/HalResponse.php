@@ -2,7 +2,7 @@
 
 namespace FikenSDK\Parsers;
 
-use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Message\Response;
 
 class HalResponse
 {
@@ -10,12 +10,12 @@ class HalResponse
     public $embedded;
     public $properties;
 
-    public function __construct(ResponseInterface $response)
+    public function __construct(Response $response)
     {
         $this->parse($response);
     }
 
-    protected function parse(ResponseInterface $response)
+    protected function parse(Response $response)
     {
         $responseBody = json_decode((string) $response->getBody());
 
@@ -54,7 +54,7 @@ class HalResponse
         }
     }
 
-    protected function parseEmptyResponse(ResponseInterface $response)
+    protected function parseEmptyResponse(Response $response)
     {
         $responseLocationHeader = $response->getHeader('Location');
 

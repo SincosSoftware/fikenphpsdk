@@ -17,8 +17,10 @@ class Client
     public function __construct($username, $password, $company, $bankAccount)
     {
         $this->httpClient = new HttpClient([
-            'auth' => [$username, $password],
-            'headers' => ['Content-Type' => 'application/json'],
+            'defaults' => [
+                'auth' => [$username, $password],
+                'headers' => ['Content-Type' => 'application/json'],
+            ],
         ]);
 
         $this->company = $company;
