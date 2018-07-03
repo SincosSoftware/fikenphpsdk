@@ -42,6 +42,11 @@ class HalResponse
         return null;
     }
 
+    public function getSelfHref()
+    {
+        return isset($this->links->_links->self->href) ? $this->links->_links->self->href : null;
+    }
+
     protected function parseResponseBody($responseBody)
     {
         $this->links = isset($responseBody->_links) ? $responseBody->_links : null;

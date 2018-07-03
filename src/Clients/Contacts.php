@@ -10,7 +10,7 @@ class Contacts extends ResourceClient
     {
         $response = $this->post($contact->toArray());
 
-        return $response;
+        return $response->getSelfHref();
     }
 
     public function find(Contact $contactData)

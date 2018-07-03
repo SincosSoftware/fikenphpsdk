@@ -3,9 +3,13 @@
 namespace FikenSDK;
 
 use Exception;
+use FikenSDK\Clients\Contacts;
 use FikenSDK\Clients\ResourceClient;
 use GuzzleHttp\Client as HttpClient;
 
+/**
+ * @property Contacts $contacts
+ */
 class Client
 {
     public $apiCredentials;
