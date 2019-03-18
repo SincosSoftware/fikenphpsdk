@@ -67,11 +67,11 @@ class Contacts extends ResourceClient
     protected function sortContacts($contacts)
     {
         usort($contacts, function($a, $b) {
-            if (isset($a->memberNumber) && ! isset($b->memberNumber)) {
+            if (isset($a->memberNumber) && !isset($b->memberNumber)) {
                 return -1;
             }
 
-            if (! isset($a->memberNumber) && isset($b->memberNumber)) {
+            if (!isset($a->memberNumber) && isset($b->memberNumber)) {
                 return 1;
             }
 
@@ -79,11 +79,11 @@ class Contacts extends ResourceClient
                 return $a->memberNumber > $b->memberNumber ? -1 : ($a->memberNumber < $b->memberNumber ? 1 : 0);
             }
 
-            if (isset($a->customerNumber) && ! isset($b->customerNumber)) {
+            if (isset($a->customerNumber) && !isset($b->customerNumber)) {
                 return -1;
             }
 
-            if (! isset($a->customerNumber) && isset($b->customerNumber)) {
+            if (!isset($a->customerNumber) && isset($b->customerNumber)) {
                 return 1;
             }
 
