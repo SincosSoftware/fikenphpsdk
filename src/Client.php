@@ -14,14 +14,9 @@ class Client
     protected $resourceClients;
     protected $bankAccount;
 
-    public function __construct($company, $bankAccount, $client = null)
+    public function __construct($company, $bankAccount, HttpClient $client)
     {
-        if (is_null($client)) {
-            $this->httpClient = new HttpClient();
-        } else {
-            $this->httpClient = $client;
-        }
-
+        $this->httpClient = $client;
         $this->company = $company;
         $this->bankAccount = $bankAccount;
     }
