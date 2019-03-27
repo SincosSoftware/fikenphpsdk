@@ -9,14 +9,14 @@ use GuzzleHttp\Client as HttpClient;
 class Client
 {
     public $apiCredentials;
-    protected $httpClient;
+    public $httpClient;
     protected $company;
     protected $resourceClients;
     protected $bankAccount;
 
     public function __construct($company, $bankAccount, HttpClient $client)
     {
-        $this->httpClient = $client;
+        $this->httpClient = $this->validateHttpClient($client);
         $this->company = $company;
         $this->bankAccount = $bankAccount;
     }
@@ -60,5 +60,16 @@ class Client
         }
 
         return true;
+    }
+
+    protected function validateHttpClient(HttpClient $client)
+    {
+        $config = $client->getConfig()['config'];
+
+        if (isset($config['auth'][0]) && isset($config['auth'][1]) && isset($config['headers']['Content-Type'])) {
+            return $client;
+        }
+
+        throw new Exception('The HTTP client is not valid, and is missing either/or the request options: auth, headers.');
     }
 }
