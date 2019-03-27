@@ -4,6 +4,7 @@ namespace FikenSDK;
 
 use Exception;
 use FikenSDK\Clients\ResourceClient;
+use FikenSDK\Exceptions\HttpClientValidationException;
 use GuzzleHttp\Client as HttpClient;
 
 class Client
@@ -64,12 +65,18 @@ class Client
 
     protected function validateHttpClient(HttpClient $client)
     {
-        $config = $client->getConfig()['config'];
+        $config = $client->getConfig('config');
 
-        if (isset($config['auth'][0]) && isset($config['auth'][1]) && isset($config['headers']['Content-Type'])) {
+        if (
+            isset($config['auth'][0])
+            && isset($config['auth'][1])
+            && isset($config['headers']['Content-Type'])
+            && $config['headers']['Content-Type'] === 'application/json'
+        )
+        {
             return $client;
         }
 
-        throw new Exception('The HTTP client is not valid, and is missing either/or the request options: auth, headers.');
+        throw new HttpClientValidationException();
     }
 }

@@ -3,6 +3,7 @@
 namespace Tests\FikenSDK\Client;
 
 use FikenSDK\Client as SdkClient;
+use FikenSDK\Exceptions\HttpClientValidationException;
 use GuzzleHttp\Client;
 use Tests\Functional\TestCase;
 
@@ -28,7 +29,7 @@ final class ClientValidationTest extends TestCase
      */
     public function testClientThrowsExceptionIfMissingConfiguration($configuration)
     {
-        $this->setExpectedException(Exception::class, 'The HTTP client is not valid, and is missing either/or the request options: auth, headers.');
+        $this->setExpectedException(HttpClientValidationException::class, 'The HTTP client is not valid, and is missing either Auth (username, password) or correct Content-Type (application/json)');
 
         new SdkClient('foo', 'bar', new Client([
             'config' => $configuration
@@ -42,7 +43,7 @@ final class ClientValidationTest extends TestCase
                 [
                     'auth' => [],
                     'headers' => ['Content-Type' => 'application/json'],
-                ]
+                ],
             ],
             'Missing username' => [
                 [
@@ -50,7 +51,7 @@ final class ClientValidationTest extends TestCase
                         'baz',
                     ],
                     'headers' => ['Content-Type' => 'application/json'],
-                ]
+                ],
             ],
             'Missing Headers' => [
                 [
@@ -58,7 +59,7 @@ final class ClientValidationTest extends TestCase
                         'foz',
                         'baz',
                     ]
-                ]
+                ],
             ]
         ];
     }
