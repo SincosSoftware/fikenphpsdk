@@ -1,0 +1,24 @@
+<?php
+
+namespace FikenSDK\Clients;
+
+use FikenSDK\Resources\JournalEntry as JournalEntryTest;
+
+class JournalEntries extends ResourceClient
+{
+    public function createJournalEntry(JournalEntryTest $journalEntry)
+    {
+        $response = $this->httpClient->post(
+            $this->getUrl(),
+            [
+                'body' => json_encode($journalEntry->toArray())
+            ]
+        );
+
+        return $this->parseResponse($response);
+    }
+
+    protected function getUrl () {
+        return $this->getResourceUrl('create-general-journal-entry-service');
+    }
+}

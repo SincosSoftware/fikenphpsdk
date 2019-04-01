@@ -83,6 +83,7 @@ abstract class ResourceClient
     protected function getCompany()
     {
         $companies = $this->getCompanies();
+
         foreach ($companies as $company) {
             if ($company->slug === $this->companySlug) {
                 return $company;
