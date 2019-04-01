@@ -65,13 +65,11 @@ class Client
 
     protected function validateHttpClient(HttpClient $client)
     {
-        $config = $client->getConfig('config');
-
         if (
-            isset($config['auth'][0])
-            && isset($config['auth'][1])
-            && isset($config['headers']['Content-Type'])
-            && $config['headers']['Content-Type'] === 'application/json'
+            isset($client->getConfig('auth')[0])
+            && isset($client->getConfig('auth')[1])
+            && isset($client->getConfig('headers')['Content-Type'])
+            && $client->getConfig('headers')['Content-Type'] === 'application/json'
         )
         {
             return $client;
