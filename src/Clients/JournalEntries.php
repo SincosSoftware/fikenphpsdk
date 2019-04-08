@@ -6,7 +6,7 @@ use FikenSDK\Resources\JournalEntry as JournalEntryTest;
 
 class JournalEntries extends ResourceClient
 {
-    public function createJournalEntry(JournalEntryTest $journalEntry)
+    public function create(JournalEntryTest $journalEntry)
     {
         $response = $this->httpClient->post(
             $this->getUrl(),
