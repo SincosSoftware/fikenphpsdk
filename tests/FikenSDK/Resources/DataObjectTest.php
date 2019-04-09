@@ -90,7 +90,7 @@ final class DataObjectTest extends TestCase
         return [
             'string' => ['brand', 123, sprintf($message, "'brand'", 'string')],
             'int' => ['model', 'foobar', sprintf($message, '\'model\'', 'int')],
-            'bool' => ['is_diesel', 'no', sprintf($message, '\'is_diesel\'', 'bool')]
+            'bool' => ['is_diesel', 'no', sprintf($message, "'is_diesel'", 'bool')]
         ];
     }
 
