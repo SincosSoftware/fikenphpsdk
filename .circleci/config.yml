@@ -1,0 +1,34 @@
+# PHP CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-php/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/php:5.6-fpm-node-browsers
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            # "composer.lock" can be used if it is committed to the repo
+            - composer-dependencies-{{ checksum "composer.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - composer-dependencies-
+      - run:
+          name: Install dependencies
+          command: |
+            sudo composer self-update
+            composer install
+      - save_cache:
+          key: composer-dependencies-{{ checksum "composer.lock" }}
+          paths:
+            - vendor
+      - run:
+          name: Run PhpUnit test suite
+          command: ./vendor/bin/phpunit --log-junit tests/_output/phpunit_log.xml
+      - store_test_results:
+          path: tests/_output
+      - store_artifacts:
+          path: tests/_output

@@ -128,7 +128,8 @@ abstract class DataObject
 
     protected function canConvertToDataObject($propertyType, $value)
     {
-        return class_exists($propertyType)
+        return !($propertyType instanceOf Closure)
+            && class_exists($propertyType)
             && is_subclass_of($propertyType, DataObject::class)
             && $value instanceof stdClass;
     }
