@@ -108,7 +108,7 @@ final class DataObjectTest extends TestCase
 
     public function testMissingRequiredProperty()
     {
-        $this->setExpectedException(MissingRequiredPropertyException::class, 'The class \'Tests\FikenSDK\Resources\Car\' is missing the following required properties: model.');
+        $this->setExpectedException(MissingRequiredPropertyException::class, "The class 'Tests\FikenSDK\Resources\Car' is missing the following required properties: model.");
 
         $car = new Car([
             'brand' => 'Saab',
