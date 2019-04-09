@@ -9,7 +9,6 @@ use GuzzleHttp\Client as HttpClient;
 
 class Client
 {
-    public $apiCredentials;
     protected $httpClient;
     protected $company;
     protected $resourceClients;
