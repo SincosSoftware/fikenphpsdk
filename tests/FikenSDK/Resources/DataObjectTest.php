@@ -88,15 +88,15 @@ final class DataObjectTest extends TestCase
         $message = 'Property %s must be of type %s.';
 
         return [
-            'string' => ['brand', 123, sprintf($message, '\'brand\'', 'string')],
-            'int' => ['model', 'foobar', sprintf($message, '\'model\'', 'int')],
-            'bool' => ['is_diesel', 'no', sprintf($message, '\'is_diesel\'', 'bool')]
+            'string' => ['brand', 123, sprintf($message, "'brand'", 'string')],
+            'int' => ['model', 'foobar', sprintf($message, "'model'", 'int')],
+            'bool' => ['is_diesel', 'no', sprintf($message, "'is_diesel'", 'bool')]
         ];
     }
 
     public function testUnknownProperty()
     {
-        $this->setExpectedException(InvalidPropertyException::class, 'The class \'Tests\FikenSDK\Resources\Car\' does not support the property is_petrol.');
+        $this->setExpectedException(InvalidPropertyException::class, "The class 'Tests\FikenSDK\Resources\Car' does not support the property is_petrol.");
 
         new Car([
             'brand' => 'Saab',
@@ -108,7 +108,7 @@ final class DataObjectTest extends TestCase
 
     public function testMissingRequiredProperty()
     {
-        $this->setExpectedException(MissingRequiredPropertyException::class, 'The class \'Tests\FikenSDK\Resources\Car\' is missing the following required properties: model.');
+        $this->setExpectedException(MissingRequiredPropertyException::class, "The class 'Tests\FikenSDK\Resources\Car' is missing the following required properties: model.");
 
         $car = new Car([
             'brand' => 'Saab',
