@@ -10,9 +10,24 @@ jobs:
 
     steps:
       - checkout
-      - run: sudo composer self-update
-      - run: composer install
-      - run: ./vendor/bin/phpunit
+      - restore_cache:
+          keys:
+            # "composer.lock" can be used if it is committed to the repo
+            - composer-dependencies-{{ checksum "composer.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - composer-dependencies-
+      - run:
+          name: Install dependencies
+          command: |
+            sudo composer self-update
+            composer install
+      - save_cache:
+          key: composer-dependencies-{{ checksum "composer.lock" }}
+          paths:
+            - vendor
+      - run:
+          name: Run PhpUnit test suite
+          command: ./vendor/bin/phpunit --log-junit tests/_output/phpunit_log.xml
       - store_test_results:
           path: tests/_output
       - store_artifacts:
