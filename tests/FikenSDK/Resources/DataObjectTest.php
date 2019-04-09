@@ -88,7 +88,7 @@ final class DataObjectTest extends TestCase
         $message = 'Property %s must be of type %s.';
 
         return [
-            'string' => ['brand', 123, sprintf($message, '\'brand\'', 'string')],
+            'string' => ['brand', 123, sprintf($message, "'brand'", 'string')],
             'int' => ['model', 'foobar', sprintf($message, '\'model\'', 'int')],
             'bool' => ['is_diesel', 'no', sprintf($message, '\'is_diesel\'', 'bool')]
         ];
