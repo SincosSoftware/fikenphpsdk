@@ -9,21 +9,6 @@ use Tests\Functional\TestCase;
 
 final class ClientValidationTest extends TestCase
 {
-    public function testClientIsValidWithPreconstructedHttpClient()
-    {
-        $client = new SdkClient('foo', 'bar', new Client([
-            'config' => [
-                'auth' => [
-                    'foz',
-                    'baz',
-                ],
-                'headers' => ['Content-Type' => 'application/json'],
-            ]
-        ]));
-
-        $this->assertInstanceOf(Client::class, $client->httpClient);
-    }
-
     /**
      * @dataProvider configurationParts
      */
