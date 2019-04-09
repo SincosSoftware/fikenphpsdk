@@ -8,6 +8,7 @@ class Orderitem extends DataObject
     {
         return [
             'description' => 'string',
+            'quantity' => 'int',
             'netPrice' => 'int',
             'vat' => 'int',
             'account' => 'string',

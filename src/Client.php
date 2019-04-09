@@ -4,23 +4,20 @@ namespace FikenSDK;
 
 use Exception;
 use FikenSDK\Clients\ResourceClient;
+use FikenSDK\Exceptions\HttpClientValidationException;
 use GuzzleHttp\Client as HttpClient;
 
 class Client
 {
-    public $apiCredentials;
     protected $httpClient;
     protected $company;
     protected $resourceClients;
     protected $bankAccount;
 
-    public function __construct($username, $password, $company, $bankAccount)
+    public function __construct($company, $bankAccount, HttpClient $client)
     {
-        $this->httpClient = new HttpClient([
-            'auth' => [$username, $password],
-            'headers' => ['Content-Type' => 'application/json'],
-        ]);
-
+        $this->validateHttpClient($client);
+        $this->httpClient = $client;
         $this->company = $company;
         $this->bankAccount = $bankAccount;
     }
@@ -64,5 +61,18 @@ class Client
         }
 
         return true;
+    }
+
+    protected function validateHttpClient(HttpClient $client)
+    {
+        if (
+            !isset($client->getConfig('auth')[0])
+            || !isset($client->getConfig('auth')[1])
+            || !isset($client->getConfig('headers')['Content-Type'])
+            || $client->getConfig('headers')['Content-Type'] !== 'application/json'
+        )
+        {
+            throw new HttpClientValidationException;
+        }
     }
 }

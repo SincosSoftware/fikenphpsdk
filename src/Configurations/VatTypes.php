@@ -2,7 +2,7 @@
 
 namespace FikenSDK\Configurations;
 
-class Vat
+class VatTypes
 {
     const HIGH = 'HIGH';
     const MEDIUM = 'MEDIUM';

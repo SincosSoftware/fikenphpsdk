@@ -7,7 +7,7 @@ use FikenSDK\Exceptions\InvalidTypeException;
 use FikenSDK\Exceptions\MissingRequiredPropertyException;
 use PHPUnit\Framework\TestCase;
 
-class DataObjectTest extends TestCase
+final class DataObjectTest extends TestCase
 {
     /**
      * @throws InvalidPropertyException
