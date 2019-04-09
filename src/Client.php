@@ -17,7 +17,8 @@ class Client
 
     public function __construct($company, $bankAccount, HttpClient $client)
     {
-        $this->httpClient = $this->validateHttpClient($client);
+        $this->validateHttpClient($client);
+        $this->httpClient = $client;
         $this->company = $company;
         $this->bankAccount = $bankAccount;
     }
@@ -66,15 +67,13 @@ class Client
     protected function validateHttpClient(HttpClient $client)
     {
         if (
-            isset($client->getConfig('auth')[0])
-            && isset($client->getConfig('auth')[1])
-            && isset($client->getConfig('headers')['Content-Type'])
-            && $client->getConfig('headers')['Content-Type'] === 'application/json'
+            !isset($client->getConfig('auth')[0])
+            || !isset($client->getConfig('auth')[1])
+            || !isset($client->getConfig('headers')['Content-Type'])
+            || $client->getConfig('headers')['Content-Type'] !== 'application/json'
         )
         {
-            return $client;
+            throw new HttpClientValidationException();
         }
-
-        throw new HttpClientValidationException();
     }
 }
