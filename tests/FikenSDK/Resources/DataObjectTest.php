@@ -96,7 +96,7 @@ final class DataObjectTest extends TestCase
 
     public function testUnknownProperty()
     {
-        $this->setExpectedException(InvalidPropertyException::class, 'The class \'Tests\FikenSDK\Resources\Car\' does not support the property is_petrol.');
+        $this->setExpectedException(InvalidPropertyException::class, "The class 'Tests\FikenSDK\Resources\Car' does not support the property is_petrol.");
 
         new Car([
             'brand' => 'Saab',
