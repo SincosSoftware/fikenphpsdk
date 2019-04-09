@@ -174,7 +174,7 @@ abstract class DataObject
     {
         $method = $this->getValidationMethodForProperty($name);
 
-        return ! $method($value);
+        return !$method($value);
     }
 
     protected function getValidationMethodForProperty($name)

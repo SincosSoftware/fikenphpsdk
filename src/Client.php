@@ -24,7 +24,7 @@ class Client
 
     public function __get($argument)
     {
-        if (! isset($this->resourceClients[$argument])) {
+        if (!isset($this->resourceClients[$argument])) {
             $this->resourceClients[$argument] = $this->createClient($argument);
         }
 
@@ -52,11 +52,11 @@ class Client
      */
     protected function isValidClient($class)
     {
-        if (! class_exists($class)) {
+        if (!class_exists($class)) {
             throw new Exception('Class ' . $class . ' does not exist.');
         }
 
-        if (! is_subclass_of($class, ResourceClient::class)) {
+        if (!is_subclass_of($class, ResourceClient::class)) {
             throw new Exception('Class ' . $class . ' doesn\'t implement ' . ResourceClient::class . '.');
         }
 
@@ -72,7 +72,7 @@ class Client
             || $client->getConfig('headers')['Content-Type'] !== 'application/json'
         )
         {
-            throw new HttpClientValidationException();
+            throw new HttpClientValidationException;
         }
     }
 }
