@@ -2,11 +2,11 @@
 
 namespace FikenSDK\Clients;
 
-use FikenSDK\Resources\JournalEntry as JournalEntryTest;
+use FikenSDK\Resources\JournalEntry;
 
 class JournalEntries extends ResourceClient
 {
-    public function create(JournalEntryTest $journalEntry)
+    public function create(JournalEntry $journalEntry)
     {
         $response = $this->httpClient->post(
             $this->getUrl(),
