@@ -72,7 +72,7 @@ class Client
             || $client->getConfig('headers')['Content-Type'] !== 'application/json'
         )
         {
-            throw new HttpClientValidationException();
+            throw new HttpClientValidationException;
         }
     }
 }
