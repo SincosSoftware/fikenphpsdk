@@ -5,7 +5,7 @@ namespace Tests\FikenSDK\Client;
 use FikenSDK\Client as SdkClient;
 use FikenSDK\Exceptions\HttpClientValidationException;
 use GuzzleHttp\Client;
-use Tests\Functional\TestCase;
+use PHPUnit\Framework\TestCase;
 
 final class ClientValidationTest extends TestCase
 {
