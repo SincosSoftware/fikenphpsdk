@@ -16,7 +16,7 @@ class Car extends DataObject
             'previous_owners' => 'array',
             'drive_wheel' => function ($value) {
                 return in_array($value, ['front', 'back']);
-            }
+            },
         ];
     }
 

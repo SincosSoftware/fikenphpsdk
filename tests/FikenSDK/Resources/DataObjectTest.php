@@ -9,9 +9,6 @@ use PHPUnit\Framework\TestCase;
 
 final class DataObjectTest extends TestCase
 {
-    /**
-     * @throws InvalidPropertyException
-     */
     public function testCreation()
     {
         $carData = [
@@ -62,14 +59,11 @@ final class DataObjectTest extends TestCase
         $this->assertEquals($carData, $car->toArray());
     }
 
-    /**
-     * @throws InvalidPropertyException
-     */
     public function testTypeValidationFailsWithClosure()
     {
-        $this->expectExceptionMessage('Property drive_wheel does not conform to requirements.');
+        $this->setExpectedException(InvalidTypeException::class, 'Property \'drive_wheel\' does not conform to requirements.');
 
-        $car = new Car([
+        new Car([
             'model' => 2016,
             'brand' => 'Saab',
             'drive_wheel' => '4WD',
@@ -78,16 +72,11 @@ final class DataObjectTest extends TestCase
     }
 
     /**
-     * @param string $property
-     * @param $value
-     * @param string $message
-     * @throws InvalidPropertyException
      * @dataProvider propertyTypeProvider
      */
     public function testInvalidPropertyTypes($property, $value, $message)
     {
-        $this->expectException(InvalidTypeException::class);
-        $this->expectExceptionMessage($message);
+        $this->setExpectedException(InvalidTypeException::class, $message);
 
         new Car([
             $property => $value
@@ -99,19 +88,15 @@ final class DataObjectTest extends TestCase
         $message = 'Property %s must be of type %s.';
 
         return [
-            'string' => ['brand', 123, sprintf($message, 'brand', 'string')],
-            'int' => ['model', 'foobar', sprintf($message, 'model', 'int')],
-            'bool' => ['is_diesel', 'no', sprintf($message, 'is_diesel', 'bool')]
+            'string' => ['brand', 123, sprintf($message, '\'brand\'', 'string')],
+            'int' => ['model', 'foobar', sprintf($message, '\'model\'', 'int')],
+            'bool' => ['is_diesel', 'no', sprintf($message, '\'is_diesel\'', 'bool')]
         ];
     }
 
-    /**
-     * @throws InvalidPropertyException
-     */
     public function testUnknownProperty()
     {
-        $this->expectException(InvalidPropertyException::class);
-        $this->expectExceptionMessage('The class Tests\FikenSDK\Resources\Car does not support the property is_petrol.');
+        $this->setExpectedException(InvalidPropertyException::class, 'The class \'Tests\FikenSDK\Resources\Car\' does not support the property is_petrol.');
 
         new Car([
             'brand' => 'Saab',
@@ -121,15 +106,11 @@ final class DataObjectTest extends TestCase
         ]);
     }
 
-    /**
-     * @throws MissingRequiredPropertyException
-     */
     public function testMissingRequiredProperty()
     {
-        $this->expectException(MissingRequiredPropertyException::class);
-        $this->expectExceptionMessage('The class Tests\FikenSDK\Resources\Car is missing the following required properties: model.');
+        $this->setExpectedException(MissingRequiredPropertyException::class, 'The class \'Tests\FikenSDK\Resources\Car\' is missing the following required properties: model.');
 
-        new Car([
+        $car = new Car([
             'brand' => 'Saab',
         ]);
     }
