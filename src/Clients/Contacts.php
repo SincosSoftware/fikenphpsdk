@@ -53,13 +53,18 @@ class Contacts extends ResourceClient
 
     protected function contactMatches($contact, Contact $contactData)
     {
-        if (isset($contact->memberNumber) && (int) $contact->memberNumber === (int) $contactData->memberNumber) {
+        if (
+            isset($contact->memberNumber) && (int) $contact->memberNumber === (int) $contactData->memberNumber
+            && isset($contact->name) && $contact->name === $contactData->name
+            && isset($contact->address->address1) && $contact->address->address1 === $contactData->address->address1
+            && isset($contact->address->address2) && $contact->address->address2 === $contactData->address->address2
+            && isset($contact->address->postalPlace) && $contact->address->postalPlace === $contactData->address->postalPlace
+            && isset($contact->address->postalCode) && $contact->address->postalCode === $contactData->address->postalCode
+            && isset($contact->address->country) && $contact->address->country === $contactData->address->country
+        ) {
             return $contact;
         }
 
-        if ($contact->name == $contactData->name) {
-            return $contact;
-        }
 
         return false;
     }
