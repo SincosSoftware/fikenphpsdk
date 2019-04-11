@@ -13,9 +13,9 @@ class Contacts extends ResourceClient
         return $response;
     }
 
-    public function find(Contact $contactData)
+    public function find(Contact $contactData, $strictMatch)
     {
-        $contact = $this->findContact($contactData);
+        $contact = $this->findContact($contactData, $strictMatch);
 
         if (null === $contact) {
             return null;
@@ -24,7 +24,7 @@ class Contacts extends ResourceClient
         return Contact::fromStdClass($contact);
     }
 
-    protected function findContact(Contact $contactData)
+    protected function findContact(Contact $contactData, $strictMatch)
     {
         $response = $this->search($contactData->email);
 
@@ -35,14 +35,18 @@ class Contacts extends ResourceClient
         $rel = $this->getRelUrl();
         $contacts = $response->embedded->$rel;
 
-        return $this->getFirstMatch($contacts, $contactData);
+        return $this->getFirstMatch($contacts, $contactData, $strictMatch);
     }
 
-    protected function getFirstMatch($contacts, Contact $contactData)
+    protected function getFirstMatch($contacts, Contact $contactData, $strictMatch)
     {
         $sortedContacts = $this->sortContacts($contacts);
 
         foreach ($sortedContacts as $contact){
+            if ($strictMatch && $this->contactMatchesStrict($contact, $contactData)) {
+                return $contact;
+            }
+
             if ($this->contactMatches($contact, $contactData)) {
                 return $contact;
             }
@@ -52,6 +56,19 @@ class Contacts extends ResourceClient
     }
 
     protected function contactMatches($contact, Contact $contactData)
+    {
+        if (isset($contact->memberNumber) && (int) $contact->memberNumber === (int) $contactData->memberNumber) {
+            return $contact;
+        }
+
+        if ($contact->name == $contactData->name) {
+            return $contact;
+        }
+
+        return false;
+    }
+
+    protected function contactMatchesStrict($contact, Contact $contactData)
     {
         if (
             isset($contact->memberNumber) && (int) $contact->memberNumber === (int) $contactData->memberNumber
@@ -64,7 +81,6 @@ class Contacts extends ResourceClient
         ) {
             return $contact;
         }
-
 
         return false;
     }
