@@ -61,7 +61,7 @@ class Contacts extends ResourceClient
             return $contact;
         }
 
-        if ($contact->name == $contactData->name) {
+        if ($this->normalizeName($contact->name) === $this->normalizeName($contactData->name)) {
             return $contact;
         }
 
@@ -72,12 +72,12 @@ class Contacts extends ResourceClient
     {
         if (
             isset($contact->memberNumber) && (int) $contact->memberNumber === (int) $contactData->memberNumber
-            && isset($contact->name) && $contact->name === $contactData->name
-            && isset($contact->address->address1) && $contact->address->address1 === $contactData->address->address1
-            && isset($contact->address->address2) && $contact->address->address2 === $contactData->address->address2
-            && isset($contact->address->postalPlace) && $contact->address->postalPlace === $contactData->address->postalPlace
-            && isset($contact->address->postalCode) && $contact->address->postalCode === $contactData->address->postalCode
-            && isset($contact->address->country) && $contact->address->country === $contactData->address->country
+            && isset($contact->name) && $this->normalizeName($contact->name) === $this->normalizeName($contactData->name)
+            && isset($contact->address->address1) && $this->normalizeString($contact->address->address1) === $this->normalizeString($contactData->address->address1)
+            && isset($contact->address->address2) && $this->normalizeString($contact->address->address2) === $this->normalizeString($contactData->address->address2)
+            && isset($contact->address->postalPlace) && $this->normalizeString($contact->address->postalPlace) === $this->normalizeString($contactData->address->postalPlace)
+            && isset($contact->address->postalCode) && (int) $contact->address->postalCode === (int) $contactData->address->postalCode
+            && isset($contact->address->country) && $this->normalizeString($contact->address->country) === $this->normalizeString($contactData->address->country)
         ) {
             return $contact;
         }
@@ -116,5 +116,17 @@ class Contacts extends ResourceClient
         });
 
         return $contacts;
+    }
+
+    protected function normalizeName($name)
+    {
+        $exploded = explode(' ', $name);
+
+        return mb_strtolower(reset($exploded) . end($exploded), 'UTF-8');
+    }
+
+    protected function normalizeString($string)
+    {
+        return mb_strtolower(str_replace(' ', '', $string), 'UTF_8');
     }
 }
