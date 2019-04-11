@@ -48,7 +48,7 @@ abstract class ResourceClient
         return $this->parseResponse($response);
     }
 
-    protected function post(Array $body)
+    protected function post(array $body)
     {
         $response = $this->httpClient->post(
             $this->getResourceUrl(),
