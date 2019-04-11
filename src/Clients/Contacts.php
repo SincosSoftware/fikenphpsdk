@@ -71,8 +71,7 @@ class Contacts extends ResourceClient
     protected function contactMatchesStrict($contact, Contact $contactData)
     {
         if (
-            isset($contact->memberNumber) && (int) $contact->memberNumber === (int) $contactData->memberNumber
-            && isset($contact->name) && $this->normalizeName($contact->name) === $this->normalizeName($contactData->name)
+            isset($contact->name) && $this->normalizeName($contact->name) === $this->normalizeName($contactData->name)
             && isset($contact->address->address1) && $this->normalizeString($contact->address->address1) === $this->normalizeString($contactData->address->address1)
             && isset($contact->address->address2) && $this->normalizeString($contact->address->address2) === $this->normalizeString($contactData->address->address2)
             && isset($contact->address->postalPlace) && $this->normalizeString($contact->address->postalPlace) === $this->normalizeString($contactData->address->postalPlace)
