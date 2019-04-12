@@ -233,61 +233,41 @@ final class DataObjectTest extends TestCase
 
     public function testMatches()
     {
-        $contact = new Contact([
-            'name' => 'Åsbjørn Hansen',
-            'email' => 'asbjorn@24nettbutikk.no',
+        $subject = new Car([
+            'brand' => 'Kia',
+            'model' => 2016
         ]);
 
-        $newContact = new Contact([
-            'name' => 'Åsbjørn Hansen',
-            'email' => 'asbjorn@24nettbutikk.no',
-            'organizationIdentifier' => '123456789',
+        $newSubject = new Car([
+            'brand' => 'Kia',
+            'model' => 2016,
+            'is_diesel' => true
         ]);
 
-        $this->assertTrue($contact->matches($newContact));
-        $this->assertFalse($newContact->matches($contact));
+        $this->assertTrue($subject->matches($newSubject));
+        $this->assertFalse($newSubject->matches($subject));
     }
 
     public function testMatchesComplex()
     {
-        $contact = new Contact([
-            'name' => 'Åsbjørn Hansen',
-            'email' => 'asbjorn@24nettbutikk.no',
-            'organizationIdentifier' => '123456789',
-            'address' => new Address([
-                'postalCode' => '7900',
-            ]),
-            'phoneNumber' => '12345678',
-            'customerNumber' => 999,
-            'customer' => true,
-            'supplierNumber' => 123,
-            'supplier' => false,
-            'memberNumber' => 555,
-            'language' => 'Norwegian',
+        $subject = new Car([
+            'brand' => 'Kia',
+            'is_diesel' => false,
+            'model' => 2016,
+            'previous_owners' => ['Åsbjørn Hansen'],
+            'drive_wheel' => 'front'
         ]);
 
-        $newContact = new Contact([
-            'name' => 'Åsbjørn Hansen',
-            'email' => 'asbjorn@24nettbutikk.no',
-            'organizationIdentifier' => '123456789',
-            'address' => new Address([
-                'postalCode' => '7900',
-                'postalPlace' => 'Rørvik',
-                'address1' => 'Asdvegen 2',
-                'address2' => '',
-                'country' => 'Norway',
-            ]),
-            'phoneNumber' => '12345678',
-            'customerNumber' => 999,
-            'customer' => true,
-            'supplierNumber' => 123,
-            'supplier' => false,
-            'memberNumber' => 555,
-            'language' => 'Norwegian',
+        $newSubject = new Car([
+            'brand' => 'Kia',
+            'is_diesel' => false,
+            'model' => 2016,
+            'previous_owners' => ['Åsbjørn Hansen', 'En annen person'],
+            'drive_wheel' => 'front'
         ]);
 
-        $this->assertTrue($contact->matches($newContact));
-        $this->assertFalse($newContact->matches($contact));
+        $this->assertTrue($subject->matches($newSubject));
+        $this->assertFalse($newSubject->matches($subject));
     }
 
     public function testMatchesWithSemiIdenticalName()

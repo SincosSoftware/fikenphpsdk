@@ -33,4 +33,10 @@ class Compare
     {
         return $val1 !== $val2;
     }
+
+    public static function stringCompare($string1, $string2)
+    {
+        return mb_strtolower(str_replace(' ', '', $string1), 'UTF-8')
+            === mb_strtolower(str_replace(' ', '', $string2), 'UTF-8');
+    }
 }
