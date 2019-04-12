@@ -150,7 +150,7 @@ final class DataObjectTest extends TestCase
         $this->assertTrue($contact->isIdentical($newContact));
     }
 
-    public function testItenticalComplex()
+    public function testIdenticalComplex()
     {
         $contact = new Contact([
             'name' => 'Åsbjørn Hansen',
