@@ -6,6 +6,7 @@ use Closure;
 use FikenSDK\Exceptions\InvalidPropertyException;
 use FikenSDK\Exceptions\InvalidTypeException;
 use FikenSDK\Exceptions\MissingRequiredPropertyException;
+use FikenSDK\Support\Compare;
 use stdClass;
 
 abstract class DataObject
@@ -55,6 +56,17 @@ abstract class DataObject
     public function required()
     {
         return [];
+    }
+
+    public function matches(DataObject $dataObject)
+    {
+        return static::class === get_class($dataObject)
+            && empty(Compare::arrayDiffAssoc($this->toArray(), $dataObject->toArray()));
+    }
+
+    public function isIdentical(DataObject $dataObject)
+    {
+        return $this == $dataObject;
     }
 
     /**

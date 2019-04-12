@@ -3,6 +3,8 @@
 namespace FikenSDK\Clients;
 
 use FikenSDK\Parsers\HalResponse;
+use FikenSDK\Resources\Contact;
+use FikenSDK\Resources\DataObject;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionClass;

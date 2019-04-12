@@ -5,6 +5,8 @@ namespace Tests\FikenSDK\Resources;
 use FikenSDK\Exceptions\InvalidPropertyException;
 use FikenSDK\Exceptions\InvalidTypeException;
 use FikenSDK\Exceptions\MissingRequiredPropertyException;
+use FikenSDK\Resources\Address;
+use FikenSDK\Resources\Contact;
 use PHPUnit\Framework\TestCase;
 
 final class DataObjectTest extends TestCase
@@ -134,5 +136,178 @@ final class DataObjectTest extends TestCase
         ]);
 
         $this->assertFalse('Mercedes' == $class->brand);
+    }
+
+    public function testItentical()
+    {
+        $contact = new Contact([
+            'name' => 'Åsbjørn Hansen',
+            'email' => 'asbjorn@24nettbutikk.no',
+        ]);
+
+        $newContact = clone $contact;
+
+        $this->assertTrue($contact->isIdentical($newContact));
+    }
+
+    public function testItenticalComplex()
+    {
+        $contact = new Contact([
+            'name' => 'Åsbjørn Hansen',
+            'email' => 'asbjorn@24nettbutikk.no',
+            'organizationIdentifier' => '123456789',
+            'address' => new Address([
+                'postalCode' => '7900',
+                'postalPlace' => 'Rørvik',
+                'address1' => 'Asdvegen 2',
+                'address2' => '',
+                'country' => 'Norway',
+            ]),
+            'phoneNumber' => '12345678',
+            'customerNumber' => 999,
+            'customer' => true,
+            'supplierNumber' => 123,
+            'supplier' => false,
+            'memberNumber' => 555,
+            'language' => 'Norwegian',
+        ]);
+
+        $newContact = clone $contact;
+
+        $this->assertTrue($contact->isIdentical($newContact));
+    }
+
+    public function testNonIdentical()
+    {
+        $contact = new Contact([
+            'name' => 'Åsbjørn Hansen',
+        ]);
+
+        $newContact = new Contact([
+            'name' => 'Torkil Sinkaberg Johnsen',
+        ]);
+
+        $this->assertFalse($contact->isIdentical($newContact));
+    }
+
+    public function testNonIdenticalSubObject()
+    {
+        $contact = new Contact([
+            'name' => 'Åsbjørn Hansen',
+            'email' => 'asbjorn@24nettbutikk.no',
+            'address' => new Address([
+                'postalCode' => '7901',
+                'postalPlace' => 'Rørvik',
+                'address1' => 'Asdvegen 2',
+                'address2' => '',
+                'country' => 'Norway',
+            ]),
+        ]);
+
+        $newContact = new Contact([
+            'name' => 'Åsbjørn Hansen',
+            'email' => 'asbjorn@24nettbutikk.no',
+            'address' => new Address([
+                'postalCode' => '8001',
+                'postalPlace' => 'Bodø',
+                'address1' => 'Storgata 2',
+                'address2' => '',
+                'country' => 'Norway',
+            ]),
+        ]);
+
+        $this->assertFalse($contact->isIdentical($newContact));
+    }
+
+    public function testMatchesIdentical()
+    {
+        $contact = new Contact([
+            'name' => 'Åsbjørn Hansen',
+            'email' => 'asbjorn@24nettbutikk.no',
+        ]);
+
+        $newContact = clone $contact;
+
+        $this->assertTrue($contact->matches($newContact));
+    }
+
+    public function testMatches()
+    {
+        $contact = new Contact([
+            'name' => 'Åsbjørn Hansen',
+            'email' => 'asbjorn@24nettbutikk.no',
+        ]);
+
+        $newContact = new Contact([
+            'name' => 'Åsbjørn Hansen',
+            'email' => 'asbjorn@24nettbutikk.no',
+            'organizationIdentifier' => '123456789',
+        ]);
+
+        $this->assertTrue($contact->matches($newContact));
+        $this->assertFalse($newContact->matches($contact));
+    }
+
+    public function testMatchesComplex()
+    {
+        $contact = new Contact([
+            'name' => 'Åsbjørn Hansen',
+            'email' => 'asbjorn@24nettbutikk.no',
+            'organizationIdentifier' => '123456789',
+            'address' => new Address([
+                'postalCode' => '7900',
+            ]),
+            'phoneNumber' => '12345678',
+            'customerNumber' => 999,
+            'customer' => true,
+            'supplierNumber' => 123,
+            'supplier' => false,
+            'memberNumber' => 555,
+            'language' => 'Norwegian',
+        ]);
+
+        $newContact = new Contact([
+            'name' => 'Åsbjørn Hansen',
+            'email' => 'asbjorn@24nettbutikk.no',
+            'organizationIdentifier' => '123456789',
+            'address' => new Address([
+                'postalCode' => '7900',
+                'postalPlace' => 'Rørvik',
+                'address1' => 'Asdvegen 2',
+                'address2' => '',
+                'country' => 'Norway',
+            ]),
+            'phoneNumber' => '12345678',
+            'customerNumber' => 999,
+            'customer' => true,
+            'supplierNumber' => 123,
+            'supplier' => false,
+            'memberNumber' => 555,
+            'language' => 'Norwegian',
+        ]);
+
+        $this->assertTrue($contact->matches($newContact));
+        $this->assertFalse($newContact->matches($contact));
+    }
+
+    public function testMatchesWithSemiIdenticalName()
+    {
+        $contact = new Contact([
+            'name' => 'Åsbjørn Hansen',
+            'email' => 'asbjorn@24nettbutikk.no',
+        ]);
+
+        $newContact = new Contact([
+            'name' => 'Åsbjørn WohooO! Hansen',
+            'email' => 'asbjorn@24nettbutikk.no',
+        ]);
+
+        $fooContact = new Contact([
+            'name' => 'WohooO! Åsbjørn Hansen',
+            'email' => 'asbjorn@24nettbutikk.no',
+        ]);
+
+        $this->assertTrue($contact->matches($newContact));
+        $this->assertfalse($contact->matches($fooContact));
     }
 }
