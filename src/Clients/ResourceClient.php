@@ -3,6 +3,8 @@
 namespace FikenSDK\Clients;
 
 use FikenSDK\Parsers\HalResponse;
+use FikenSDK\Resources\Contact;
+use FikenSDK\Resources\DataObject;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionClass;
@@ -48,7 +50,7 @@ abstract class ResourceClient
         return $this->parseResponse($response);
     }
 
-    protected function post(Array $body)
+    protected function post(array $body)
     {
         $response = $this->httpClient->post(
             $this->getResourceUrl(),

@@ -4,17 +4,7 @@ namespace FikenSDK\Clients;
 
 class BankAccounts extends ResourceClient
 {
-    public function bankAccounts()
-    {
-        $bankAccounts = [];
-        foreach ($this->getBankAccounts() as $value) {
-            $bankAccounts[] = $value;
-        }
-
-        return $bankAccounts;
-    }
-
-    protected function getBankAccounts()
+    public function all()
     {
         $rel = 'bank-accounts';
         $url = $this->getResourceUrl($rel);

@@ -2,6 +2,8 @@
 
 namespace FikenSDK\Resources;
 
+use FikenSDK\Support\Compare;
+
 class Contact extends DataObject
 {
     public function types()
@@ -24,5 +26,31 @@ class Contact extends DataObject
     public function required()
     {
         return ['name'];
+    }
+
+    public function matches(DataObject $dataObject)
+    {
+        if (static::class !== get_class($dataObject)) {
+            return false;
+        }
+
+        $diff = Compare::arrayDiffAssoc($this->toArray(), $dataObject->toArray());
+
+        if (empty($diff)) {
+            return true;
+        }
+
+        if (array_keys($diff) === ['name']) {
+            return Compare::stringCompare($this->normalizeName($this->name), $this->normalizeName($dataObject->name));
+        }
+
+        return false;
+    }
+
+    protected function normalizeName($name)
+    {
+        $exploded = explode(' ', $name);
+
+        return reset($exploded) . ' ' . end($exploded);
     }
 }
