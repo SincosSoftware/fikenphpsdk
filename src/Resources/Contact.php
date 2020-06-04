@@ -44,7 +44,7 @@ class Contact extends DataObject
             return Compare::stringCompare($this->normalizeName($this->name), $this->normalizeName($dataObject->name));
         }
 
-        return false;
+        return array_keys($diff) === ['customerNumber', 'memberNumber'];
     }
 
     protected function normalizeName($name)
