@@ -64,9 +64,9 @@ abstract class DataObject
             && empty(Compare::arrayDiffAssoc($this->toArray(), $dataObject->toArray()));
     }
 
-    public function isIdentical(DataObject $dataObject)
+    public function isIdentical(DataObject $externalDataObject)
     {
-        return $this == $dataObject;
+        return $this == $externalDataObject;
     }
 
     /**
