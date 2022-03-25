@@ -14,7 +14,8 @@ class Orderitem extends DataObject
             'account' => 'string',
             'vatType' => 'string',
             'netPriceInCurrency' => 'int',
-            'vatInCurrency' => 'int'
+            'vatInCurrency' => 'int',
+            'unitNetAmount' => 'int',
         ];
     }
 
