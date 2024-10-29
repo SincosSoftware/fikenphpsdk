@@ -17,6 +17,7 @@ class OrderitemInvoice extends DataObject
             'vatInCurrency' => 'int',
             'grossAmount' => 'int',
             'incomeAccount' => 'string',
+            'unitNetAmount' => 'int',
         ];
     }
 
